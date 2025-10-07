@@ -1,0 +1,38 @@
+﻿services:
+  api:
+    build:
+      context: .
+      dockerfile: src/GraphPersona.Api/Dockerfile
+    ports:
+      - "5544:5544"
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_URLS=http://+:5544
+      - ConnectionStrings__Default=Host=postgres;Database=graphpersona;Username=postgres;Password=postgres
+
+  postgres:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_DB: graphpersona
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    
+  migrations:
+    build:
+      context: .
+      dockerfile: src/GraphPersona.Api/Dockerfile
+      target: migrations
+    entrypoint: [ "/app/migration-bundle" ]
+    command: [ "--connection", "Host=postgres;Port=5432;Database=graphpersona;Username=postgres;Password=postgres" ]
+    depends_on:
+      - postgres
+    restart: "no"
+
+volumes:
+  pgdata:
