@@ -1,4 +1,4 @@
-﻿using GraphPersona.Api.GraphQL.Enums;
+﻿using GraphPersona.Domain.Enums;
 
 namespace GraphPersona.Api.GraphQL.Types;
 

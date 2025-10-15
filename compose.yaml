@@ -8,6 +8,7 @@
     depends_on:
       - postgres
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5544
       - ConnectionStrings__Default=Host=postgres;Database=graphpersona;Username=postgres;Password=postgres
 

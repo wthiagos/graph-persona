@@ -1,4 +1,4 @@
-﻿using GraphPersona.Api.Models;
+﻿using GraphPersona.Domain.Entities;
 
 namespace GraphPersona.Api.GraphQL.Types;
 

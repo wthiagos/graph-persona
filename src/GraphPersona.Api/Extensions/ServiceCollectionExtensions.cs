@@ -1,5 +1,6 @@
-﻿using GraphPersona.Api.Repositories;
-using GraphPersona.Api.Services;
+﻿using GraphPersona.Application.Services;
+using GraphPersona.Domain.Interfaces;
+using GraphPersona.Infrastructure.Repositories;
 
 namespace GraphPersona.Api.Extensions;
 

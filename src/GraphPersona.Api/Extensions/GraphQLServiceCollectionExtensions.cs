@@ -1,20 +1,21 @@
-﻿using GraphPersona.Api.Data;
-using GraphPersona.Api.GraphQL.Mutations;
+﻿using GraphPersona.Api.GraphQL.Mutations;
 using GraphPersona.Api.GraphQL.Queries;
 using GraphPersona.Api.GraphQL.Types;
+using GraphPersona.Api.GraphQL.Types.Add;
+using GraphPersona.Infrastructure.Data;
 
 namespace GraphPersona.Api.Extensions;
 
-public static class GraphQLServiceCollectionExtensions
+public static class GraphQlServiceCollectionExtensions
 {
-    public static IServiceCollection AddGraphPersonaGraphQL(this IServiceCollection services)
+    public static IServiceCollection AddGraphPersonaGraphQl(this IServiceCollection services)
     {
         services
             .AddGraphQLServer()
             .AddFiltering()
             .AddSorting()
             .AddProjections()
-            .RegisterDbContextFactory<GraphPersonaDbContext>()
+            .DisableIntrospection(false)
             .AddQueryType<PersonQuery>()
             .AddMutationType<PersonMutation>()
             .AddType<PersonType>()
@@ -24,9 +25,6 @@ public static class GraphQLServiceCollectionExtensions
             .AddType<AddAddressInputType>()
             .AddType<AddContactInputType>()
             .AddType<ContactTypeEnumType>()
-            .AddFiltering()
-            .AddSorting()
-            .AddProjections()
             .RegisterDbContextFactory<GraphPersonaDbContext>();
 
         return services;
