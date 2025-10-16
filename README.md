@@ -1,81 +1,91 @@
-﻿---
+﻿# GraphPersona API
 
-```markdown
-# GraphPersona API
-
-A modern GraphQL API built with .NET 9, PostgreSQL 17, and EF Core 9 — designed with clean architecture, minimal GraphQL setup via MapGraphQL, and full Docker support.
+A modern GraphQL API built with **.NET 9**, **PostgreSQL 17**, and **EF Core 9** — designed with **Clean Architecture**, single‑responsibility patterns, and full Docker support.  
+Now featuring complete CRUD flows (List, Detail, Create, Update, Delete) with validation, services, repositories, and GraphQL integration.
 
 ---
 
 ## 🚀 Tech Stack
 
-- **.NET 9** — latest runtime with minimal API and MapGraphQL
-- **GraphQL** — powered by [HotChocolate](https://chillicream.com/docs/hotchocolate) with `MapGraphQL` for minimal API-style schema
-- **PostgreSQL 17** — relational database with native enum support
-- **EF Core 9** — ORM with code-first migrations and enum mapping
-- **FluentValidation** — model validation integrated via `ModelBuilder`
-- **Docker & Docker Compose** — containerized setup with migration step
-- **Clean Architecture** — layered structure with separation of concerns
+- **.NET 9** — minimal APIs with `MapGraphQL`
+- **GraphQL** — powered by [HotChocolate](https://chillicream.com/docs/hotchocolate) with inputs, queries, and mutations
+- **PostgreSQL 17** — relational database with enum support
+- **EF Core 9** — ORM with code‑first migrations
+- **FluentValidation** — DTO validation with custom error codes
+- **Docker & Docker Compose** — containerized setup with a dedicated migration container
+- **Clean Architecture** — layered solution with strict separation of concerns
+- **Directory.Packages.props** — centralized NuGet package management
 
 ---
 
-## 🧱 Architecture Overview
+## 🧱 Solution Structure
 
 ```
-GraphPersona.Api/
-├── GraphQL/
-│   ├── Mutations/
-│   ├── Queries/
-│   ├── Inputs/
-│   ├── Types/
-├── Data/
-│   ├── Migrations/
-│   ├── GraphPersonaDbContext.cs
-├── Domain/
-│   ├── Entities/
-│   ├── Enums/
-├── Services/
-├── Repositories/
-├── Validators/
-└── Program.cs
+GraphPersona.sln
+├── GraphPersona.Api/           # API layer (GraphQL endpoints, Program.cs)
+├── GraphPersona.Application/   # Services, validators, DTOs, business logic
+├── GraphPersona.Domain/        # Entities, enums, domain rules
+├── GraphPersona.Infrastructure/# EF Core, repositories, persistence
+├── GraphPersona.Migrations/    # Dedicated migration container
 ```
 
 ---
 
 ## 📦 Features
 
-- ✅ Minimal GraphQL setup with `MapGraphQL`
-- ✅ PostgreSQL enum type mapped to C# enum
-- ✅ FluentValidation rules applied via `ModelBuilder`
-- ✅ Docker Compose step for running migrations
-- ✅ Clean `Program.cs` with DI, logging, and configuration
+- ✅ Full CRUD flows for `Person`, `Address`, and `Contact`
+- ✅ GraphQL queries and mutations for list, detail, create, update, and delete
+- ✅ Partial update support — only fields provided in the request are updated
+- ✅ FluentValidation rules for all DTOs with custom error codes
+- ✅ Services, repositories, and validators following single‑responsibility principle
+- ✅ Extension methods for a clean `Program.cs`
+- ✅ Docker Compose setup with migration container
 - ✅ Entity relationships:
     - `Person` has one optional `Address`
-    - `Person` has many `Contacts` with `Type` and `Value`
+    - `Person` has many `Contacts` with `Channel` and `Info`
 
 ---
 
 ## 📌 TODO
 
-- [ ] Implement full CRUD operations for:
-    - `Person`
-    - `Address`
-    - `Contact`
-- [ ] Add FluentValidation rules for all input models
-- [ ] Add pagination and filtering to GraphQL queries
+- [ ] Add pagination and filtering to `Person` list queries
 - [ ] Add unit and integration tests
 - [ ] Add CI/CD pipeline for Docker builds and migrations
 
 ---
 
-## 🐳 Docker Setup
+## 🏁 Getting Started
 
+### Prerequisites
+- [.NET 9 SDK](https://dotnet.microsoft.com/download)
+- [Docker](https://www.docker.com/get-started) & Docker Compose
+- [PostgreSQL client tools](https://www.postgresql.org/download/) (optional, for manual DB inspection)
+
+### Clone the Repository
+```bash
+git clone https://github.com/wthiagos/graph-persona.git
+cd graphpersona
+```
+
+### Run with Docker
 ```bash
 # Build and run the app
 docker compose up --build
+```
 
+The API will be available at:  
+👉 http://localhost:5544/graphql
+
+### Apply Database Migrations
+```bash
 # Run migrations only
-docker compose run api dotnet ef database update
+docker compose run migrations
+```
+
+### Run Locally (without Docker)
+```bash
+dotnet build
+dotnet run --project GraphPersona.Api
 ```
 
 ---
@@ -95,8 +105,8 @@ mutation {
       zipCode: "00000-000"
     },
     contacts: [
-      { type: Email, value: "john.doe@example.com" },
-      { type: Phone, value: "+1234567890" }
+      { channel: Email, info: "john.doe@example.com" },
+      { channel: Phone, info: "+1234567890" }
     ]
   }) {
     id
@@ -111,6 +121,7 @@ mutation {
 
 - Enum values must match PostgreSQL enum type: `'Email'`, `'Phone'`, `'WhatsApp'`, `'Telegram'`
 - `DateOnly` is used for `BirthDate` and validated to prevent future dates
+- Update mutations only apply changes to fields explicitly provided
 
 ---
 
